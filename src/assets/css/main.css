@@ -1,0 +1,10 @@
+/**
+ * @author 杨勇
+ * @date 18/11/1
+ * @Description: 公用样式
+*/
+
+body,html,#app{
+  width: 100%;
+  height: 100%;
+}

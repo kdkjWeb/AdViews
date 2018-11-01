@@ -12,6 +12,7 @@ export default {
 
 <style>
 /*css公共样式重置*/
-  @import "/assets/reset.css";
+  @import "/assets/css/reset.css";
+  @import "/assets/css/main.css";
   @import "/assets/font/iconfont.css";
 </style>
