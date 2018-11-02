@@ -5,15 +5,24 @@
  */
 
 import Axios from 'axios';
+import store from "../store/index";
 
+//配置API接口地址
+const API_ROOT = process.env.API_ROOT;
 
-Axios.defaults.baseURL = 'http://192.168.20.180:8088/';
+Axios.defaults.baseURL = API_ROOT;
 Axios.defaults.timeout = 5000;
 Axios.defaults.withCredentials = true;
 
 //http request 拦截器
 Axios.interceptors.request.use(
   config =>{
+    if(store.state.token){   //判断token是否存在，如果存在，则在所有请求头上面添加token
+
+      //   config.headers.Authorization = `token ${store.state.token}`;
+
+      config.headers['token'] = store.state.token;  //请求头设置token
+    }
     return config;
   },err=>{
     return Promise.reject(err)

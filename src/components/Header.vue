@@ -6,7 +6,7 @@
     <!-- end logo图片 -->
 
     <!-- start 标题 -->
-    <h1 class="title">广告运营管理平台</h1>
+    <h1 class="title">广告运营统计平台</h1>
     <!-- end 标题 -->
 
     <!-- start 右侧模块 -->
