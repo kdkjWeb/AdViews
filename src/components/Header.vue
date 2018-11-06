@@ -13,7 +13,7 @@
     <div class="right_model">
       <div>
         <span class="iconfont icon-yonghuming"></span>
-        <p>您好！管理员</p>
+        <p>您好！<span>{{userName}}</span></p>
       </div>
       <div @click="LoginOut">
         <span class="iconfont icon-084tuichu"></span>
@@ -26,20 +26,50 @@
 
 <script>
   import bus from './bus.js'
+  import {mapGetters} from "vuex";
+
+
+
+
   export default {
     data(){
       return{
         show: false,
-        userName: '测试账号',
-
+        userName: '',
       }
     },
     methods: {
       //退出登录
       LoginOut(){
         console.log('退出登录')
+
+        this.$get('pyweb/logout',{}).then(res=>{
+            if(res.code == 0){
+              //清除sessionStorage
+              sessionStorage.removeItem('userInfo');
+              //清除vuex
+              this.$store.commit('setUserInfo', null)
+              this.$router.push({
+                path: '/login'
+              })
+            }else if(res.code == 500){
+              this.$message({
+                message: '请重新登录',
+                type: 'warning'
+              });
+              this.$router.push({
+                path: '/login'
+              })
+            }
+        })
       },
 
+    },
+    mounted(){
+      this.userName = this.getUserInfo.name;
+    },
+    computed:{
+      ...mapGetters(['getUserInfo'])
     },
 
   }
@@ -85,6 +115,12 @@
   }
   .right_model span.iconfont{
     font-size: 20px;
+  }
+  .right_model div:first-child p{
+    max-width: 115px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .right_model p{
     display: inline-block;

@@ -11,6 +11,11 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI)
 
+//引用echarts
+import echarts from "echarts";
+Vue.prototype.$echarts = echarts;
+
+
 //引入axios封装请求并使用
  import Server from './server/index';
 Vue.prototype.$get = Server.get;
@@ -25,7 +30,7 @@ import store from './store/index'
   if(to.path === '/login'){
     next();
   }else {
-    if(store.state.token){
+    if(store.state.userInfo.id){
       next();
     }else {
       next({

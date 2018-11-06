@@ -90,6 +90,38 @@
           this.getRandom();
           return;
         }
+        if(this.userInfo.userName != this.userInfo.userPas){
+          this.$message({
+            message: '密码或错误，请确认后再输入',
+            type: 'warning'
+          });
+        }
+
+        this.$post('pyweb//login',{
+            phone: this.userInfo.userName
+        }).then(res=>{
+            if(res.code == 0){
+              //保存用户相关信息
+              let userInfo = {
+                name: res.userInfo.name,
+                id: res.userInfo.id,
+                role: res.data
+              }
+              //存入vuex
+              this.$store.commit('setUserInfo', userInfo)
+
+              this.$router.push({
+                name: 'hotel'
+              })
+            }else if(res.code ==500){
+              this.$message({
+                message: res.msg,
+                type: 'warning'
+              });
+            }
+        })
+
+
       }
 
     },

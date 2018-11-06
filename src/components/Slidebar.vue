@@ -33,25 +33,45 @@
 
 <script>
   import bus from './bus.js'   //引入公共中间件
+  import {mapGetters} from "vuex";
+
+
   export default {
     name: 'Slidebar',
     data(){
       return{
-        collapse: false,   //菜单栏是否折叠
-        routerItem: [
+        roleList: [
           {
-            icon: 'icon-shangsheng4',
-            index: 'index',
-            title: '运营统计'
+            icon: 'icon-binguan',
+            index: 'hotel',
+            title: '我的旅舍'
+          },{
+            icon: 'icon-guanggao',
+            index: 'ad',
+            title: '我的广告'
           }
-        ]
+        ],
+        collapse: false,   //菜单栏是否折叠
+        routerItem: []
       }
     },
     computed:{
       //匹配选中路由
       onRoutes(){
         return this.$route.path.replace('/','')
-      }
+      },
+      ...mapGetters(['getUserInfo']),
+
+    },
+    mounted(){
+      this.roleList.forEach((item,index)=>{
+        if(this.getUserInfo.role.hostelExists && index === 0){
+          this.routerItem.push(item)
+        }else if (this.getUserInfo.role.adExists && index === 1) {
+          this.routerItem.push(item)
+        }
+      })
+
     },
     methods: {
       //点击菜单栏是否折叠按钮
