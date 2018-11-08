@@ -10,7 +10,7 @@
               </dt>
               <dd>
                 <p>总点击数</p>
-                <p>3125533</p>
+                <p>{{sums.clicks}}</p>
               </dd>
             </dl>
           </div>
@@ -21,7 +21,7 @@
               </dt>
               <dd>
                 <p>总浏览量</p>
-                <p>5142433</p>
+                <p>{{sums.visits}}</p>
               </dd>
             </dl>
           </div>
@@ -34,7 +34,7 @@
               </dt>
               <dd>
                 <p>今日点击数</p>
-                <p>5142</p>
+                <p>{{assign.clicks}}</p>
               </dd>
             </dl>
           </div>
@@ -45,7 +45,7 @@
               </dt>
               <dd>
                 <p>今日浏览量</p>
-                <p>5142</p>
+                <p>{{assign.visits}}</p>
               </dd>
             </dl>
           </div>
@@ -54,8 +54,12 @@
             <p>
               <el-date-picker
                 size="mini"
-                v-model="value1"
+                v-model="date"
                 type="date"
+                :picker-options="pickerOptions"
+                value-format="yyyy-MM-dd"
+                format="yyyy 年 MM 月 dd 日"
+                @change="handleChange"
                 placeholder="选择日期">
               </el-date-picker>
             </p>
@@ -68,9 +72,7 @@
       <div class="container">
         <div class="container_head">
           <ul>
-            <li>最近一周</li>
-            <li>最近七周</li>
-            <li>最近半年</li>
+            <li :class="activeIndex == index ? 'active' : ''" @click="handleType(item.type,index)" v-for="item,index in timeList" :key="index">{{item.title}}</li>
           </ul>
         </div>
         <div class="wrap">
@@ -86,77 +88,162 @@
         name: "ChartDetails",
         data() {
           return {
-
+            activeIndex: 0,
+            timeList: [{
+              title: '最近七日',
+              type: 0
+            },{
+              title: '最近七周',
+              type: 1
+            },{
+              title: '最近半年',
+              type: 2
+            }],
+            assign: {},
+            sums: {},
+            date: '',
+            pickerOptions: {
+              //限制用户只能选择今天和今天以前的日期
+              disabledDate(time) {
+                return time.getTime() > Date.now() - 8.64e6
+              }
+            },
+            drawLineList: {
+              tooltip: {
+                trigger: 'axis'
+              },
+              legend: {
+                data:['点击量','浏览量']
+              },
+              grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+              },
+              toolbox: {
+                feature: {
+                  saveAsImage: {}
+                }
+              },
+              xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: []
+              },
+              yAxis: {
+                type: 'value'
+              },
+              series: [
+                {
+                  name:'点击量',
+                  type:'line',
+                  data:[]
+                },
+                {
+                  name:'浏览量',
+                  type:'line',
+                  data:[]
+                }
+              ]
+            }
           }
         },
 
         methods: {
             //获取顶部基本信息
-            getDataTop(){
+            getDataTop(time){
               this.$get('pyweb/ad/detailsTop',{
-                adId: this.$route.query.id
+                adId: this.$route.query.id,
+                time: time
               }).then(res=>{
+                  console.log(res)
+                  if(res.code == 0){
+                    this.assign = res.data.assign;
+                    this.sums = res.data.sums;
+                  }
+              })
+            },
+
+            //用户选择时间时触发
+            handleChange(){
+                this.getDataTop(this.date)
+            },
+
+            //控制用户选择不同的时间区域
+            handleType(type,index){
+                this.getLineList(type)
+                this.activeIndex = index;
+            },
+
+
+            //获取图表数据
+            getLineList(type){
+              this.$get('pyweb/ad/detailsData',{
+                  adId: this.$route.query.id,
+                  type: type
+              }).then(res=>{
+                  if(res.code === 0){
+
+                    //配置点击量
+                    this.drawLineList.series[0].data = this.resetArray(res.data,'clicks');
+
+                    //配置浏览量
+                    this.drawLineList.series[1].data = this.resetArray(res.data,'visits');
+
+
+                    //配置横坐标时间
+                    this.drawLineList.xAxis.data = this.resetArray(res.data,'ctime');
+
+
+
+
+                    //绘制图表
+                    this.drawLine();
+                  }
+
                   console.log(res)
               })
             },
+
+            /**
+             * 重构数组数据
+             * @param array
+             * @param type
+             * @returns {Array}
+             */
+            resetArray(array,type){
+                let arr = [];
+                array.forEach((item,index)=>{
+                    if(item[type] || item[type] === 0){
+                      arr.push(item[type])
+                    }
+                })
+
+                return arr;
+            },
+
 
             //绘制图表
             drawLine() {
               // 基于准备好的dom，初始化echarts实例
               let myChart = this.$echarts.init(this.$refs.myChart);
               // 绘制图表
-              myChart.setOption({
-                tooltip: {
-                  trigger: 'axis'
-                },
-                legend: {
-                  data:['点击量','浏览量']
-                },
-                grid: {
-                  left: '3%',
-                  right: '4%',
-                  bottom: '3%',
-                  containLabel: true
-                },
-                toolbox: {
-                  feature: {
-                    saveAsImage: {}
-                  }
-                },
-                xAxis: {
-                  type: 'category',
-                  boundaryGap: false,
-                  data: ['周一','周二','周三','周四','周五','周六','周日']
-                },
-                yAxis: {
-                  type: 'value'
-                },
-                series: [
-                  {
-                    name:'点击量',
-                    type:'line',
-                    data:[120, 132, 101, 134, 90, 230, 210]
-                  },
-                  {
-                    name:'浏览量',
-                    type:'line',
-                    data:[220, 182, 191, 234, 290, 330, 310]
-                  }
-                ]
-              });
+              myChart.setOption(this.drawLineList);
             }
           },
 
         mounted(){
-          //绘制图表
-          this.drawLine();
+
         },
 
         created(){
             //获取顶部基本信息
             this.getDataTop();
 
-          console.log(this.$route.query.id)
+            //获取图表数据  0\1\2  分别对应日周月
+            this.getLineList(0)
+
         }
     }
 </script>
@@ -255,12 +342,16 @@
     width: 100%;
     display: flex;
     display: -webkit-flex;
-    background-color: #2693fa;
+    background-color: #ddd;
     color: #fff;
     border-top-left-radius:6px;
     border-top-right-radius: 6px;
-    margin-bottom: 10px;
+    overflow: hidden;
   }
+  .active{
+    background-color: #2693fa;
+  }
+
   .container .container_head ul li{
     flex: 1;
     text-align: center;

@@ -26,16 +26,16 @@ export default {
           path: '/chartDetails',
           name: 'chartDetails',
           component: resolve => require(['@/pages/ChartDetails'],resolve)
-        },{
-          path: '*',
-          name: 'notFound',
-          component: resolve => require(['@/pages/NotFound'],resolve)
         }
       ]
     },{
       path: '/login',
       name: 'Login',
       component: resolve => require(['@/pages/Login'],resolve)
+    },{
+      path: '*',
+      name: 'notFound',
+      component: resolve => require(['@/pages/NotFound'],resolve)
     }
   ]
 }

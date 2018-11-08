@@ -17,9 +17,9 @@
           label="广告类型"
           align="center">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.detailType == 0">列表广告</el-tag>
-            <el-tag v-if="scope.row.detailType == 2">轮播图</el-tag>
-            <el-tag v-if="scope.row.detailType == 3">启动页</el-tag>
+            <el-tag v-if="scope.row.detailType == 3">列表广告</el-tag>
+            <el-tag v-else-if="scope.row.detailType == 2">启动页</el-tag>
+            <el-tag v-else>轮播图</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -113,9 +113,11 @@
     }
 </script>
 
+
+
 <style scoped>
-.ad a{
-  cursor: pointer;
-  color: #409EFF;
-}
+  .ad a{
+    cursor: pointer;
+    color: #409EFF;
+  }
 </style>

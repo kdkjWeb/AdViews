@@ -1,40 +1,46 @@
 <template>
   <div id="login">
-      <!--start logo标志-->
-      <div class="logo">
-        <div class="logo_img">
-          <img src="./../assets/images/logo.png" width="49" height="49" alt="拼游logo">
-        </div>
-        <div class="logo_txt">
-          <img src="./../assets/images/logo_txt.png" width="84" height="40" alt="拼游">
-        </div>
-      </div>
-      <!--end logo标志-->
+     <div class="wrap">
+       <!--start logo标志-->
+       <div class="logo_wrap">
+         <div class="logo">
+           <div class="logo_img">
+             <img src="./../assets/images/logo.png" width="49" height="49" alt="拼游logo">
+           </div>
+           <div class="logo_txt">
+             <img src="./../assets/images/logo_txt.png" width="84" height="40" alt="拼游">
+           </div>
+         </div>
+         <p class="concat">商务合作</p>
+       </div>
+       <!--end logo标志-->
 
-      <!--start 登陆框内容-->
-      <div class="login_wrap">
-        <div class="row">
-          <span class="iconfont icon-yonghuming icon"></span>
-          <input v-model="userInfo.userName" class="row_input" type="text" placeholder="请输入您的用户名">
-        </div>
-        <div class="row">
-          <span class="iconfont icon-icon icon"></span>
-          <input v-model="userInfo.userPas" class="row_input" type="password" placeholder="请输入您的密码">
-        </div>
-        <div class="row">
-          <input v-model="userInfo.userCode" class="code" type="text" placeholder="请输入验证码">
-          <span class="verification" @click="getRandom">{{verification}}</span>
-        </div>
-        <p class="random"><a href="javascript:;" @click="getRandom">看不清换一张</a></p>
-        <div class="row login_btn" @click="login">登录</div>
-      </div>
-      <!--end 登陆框内容-->
+       <!--start 登陆框内容-->
+       <div class="login_wrap">
+         <div class="row">
+           <span class="iconfont icon-yonghuming icon"></span>
+           <input v-model="userInfo.userName" class="row_input" type="text" placeholder="请输入您的用户名">
+         </div>
+         <div class="row">
+           <span class="iconfont icon-icon icon"></span>
+           <input v-model="userInfo.userPas" class="row_input" type="password" placeholder="请输入您的密码">
+         </div>
+         <div class="row">
+           <input v-model="userInfo.userCode" class="code" type="text" placeholder="请输入验证码">
+           <span class="verification" @click="getRandom">{{verification}}</span>
+         </div>
+         <p class="random"><a href="javascript:;" @click="getRandom">看不清换一张</a></p>
+         <div class="row login_btn" @click="login">登录</div>
+       </div>
+       <!--end 登陆框内容-->
+       <!-- start 底部版权 -->
+       <div class="copyright">
+         <p>Copyright © 2018 成都剑书科技有限公司 版权所有</p>
+       </div>
+       <!-- end 底部版权 -->
+     </div>
 
-    <!-- start 底部版权 -->
-    <div class="copyright">
-      <p>Copyright © 2018 成都恺缔科技有限公司 版权所有</p>
-    </div>
-    <!-- end 底部版权 -->
+
   </div>
 </template>
 
@@ -107,12 +113,22 @@
                 id: res.userInfo.id,
                 role: res.data
               }
+              console.log(res)
+
               //存入vuex
               this.$store.commit('setUserInfo', userInfo)
 
-              this.$router.push({
-                name: 'hotel'
-              })
+              if(res.data.hostelExists){
+                this.$router.push({
+                  name: 'hotel'
+                })
+              }else if(res.data.adExists){
+                this.$router.push({
+                  name: 'ad'
+                })
+              }
+
+
             }else if(res.code ==500){
               this.$message({
                 message: res.msg,
@@ -133,18 +149,27 @@
 
 <style scoped>
   #login{
+    display: flex;
+    display: -webkit-flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100%;
     background-image: url(../assets/images/bg.png);
     background-repeat: no-repeat;
     background-attachment: scroll;
     background-size: 100% auto;
-    padding-top: 72px;
+    /*padding-top: 72px;*/
     box-sizing: border-box;
     overflow: hidden;
   }
 
+
   /*start logo*/
+  .logo_wrap{
+    position: relative;
+
+  }
   .logo{
     display: flex;
     display: -webkit-flex;
@@ -159,6 +184,12 @@
   .logo_txt{
     width: 84px;
     margin-top: 5px;
+  }
+  .concat{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #999;
   }
   /*end logo*/
 
@@ -251,7 +282,7 @@
     width: 100%;
     text-align: center;
     margin-top: 19px;
-    color: #CACACA;
+    color: rgba(0,0,0,.9);
     font-size: 14px;
     font-family: "Microsoft YaHei";
   }

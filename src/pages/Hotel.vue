@@ -144,8 +144,11 @@
     }
 </script>
 
+
+
 <style scoped>
 .hotel .el-carousel__item img{
   width: 100%;
 }
+
 </style>
