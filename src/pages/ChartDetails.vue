@@ -157,7 +157,6 @@
                 adId: this.$route.query.id,
                 time: time
               }).then(res=>{
-                  console.log(res)
                   if(res.code == 0){
                     this.assign = res.data.assign;
                     this.sums = res.data.sums;
@@ -202,7 +201,6 @@
                     this.drawLine();
                   }
 
-                  console.log(res)
               })
             },
 

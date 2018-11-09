@@ -124,7 +124,6 @@
 
             //点击某一行
             handelRowClick(row, event, column){
-               console.log(row, event, column)
 
                 this.$router.push({
                   name: 'chartDetails',

@@ -113,7 +113,6 @@
                 id: res.userInfo.id,
                 role: res.data
               }
-              console.log(res)
 
               //存入vuex
               this.$store.commit('setUserInfo', userInfo)

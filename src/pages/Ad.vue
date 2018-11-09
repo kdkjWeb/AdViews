@@ -74,7 +74,6 @@
               pageSize: 0
             }).then(res=>{
               if (res.code === 0){
-                console.log(res)
                 this.tableData = res.data;
               }
             })
@@ -92,7 +91,6 @@
 
           //点击某一行
           handelRowClick(row, event, column){
-            console.log(row, event, column)
 
             this.$router.push({
               name: 'chartDetails',
