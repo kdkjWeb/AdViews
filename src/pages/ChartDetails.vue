@@ -93,7 +93,7 @@
               title: '最近七日',
               type: 0
             },{
-              title: '最近七周',
+              title: '最近四周',
               type: 1
             },{
               title: '最近半年',
