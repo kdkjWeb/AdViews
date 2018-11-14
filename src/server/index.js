@@ -34,6 +34,8 @@ Axios.interceptors.response.use(
   response=>{
     return response;
   },err=>{
+    console.log(err)
+    console.log(666)
     if(err.response){
       switch (err.response.status) {
 
