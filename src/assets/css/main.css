@@ -11,3 +11,15 @@ body,html,#app{
 table tbody tr.el-table__row{
   cursor: pointer;
 }
+
+
+/* 分页 */
+.page{
+  text-align: right;
+  margin-top: 20px;
+}
+
+/* 弹出遮罩层标题居中 */
+.el-dialog__header{
+  text-align: center;
+}

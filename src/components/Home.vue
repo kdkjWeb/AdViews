@@ -1,80 +1,89 @@
 <template>
-    <div class="Home">
-      <!-- 头部组件 -->
-      <v-head></v-head>
-
-      <!-- 左侧菜单栏组件 -->
-      <vSlidebar></vSlidebar>
-
-      <!-- 内容区域 -->
-      <div id="content_wrap" :class="collapse? 'content_collapse' : 'content_box'">
-
-        <!-- 路由内容区域 -->
-        <div class="content">
-          <transition name="move" mode="out-in">
-            <router-view></router-view>
-          </transition>
+    <div class="wrapper">
+        <v-head></v-head>
+        <v-sidebar></v-sidebar>
+        <div class="content-box" :class="{'content-collapse':collapse}">
+            <v-tags></v-tags>
+            <div class="content">
+                <transition name="move" mode="out-in">
+                    <keep-alive :include="tagsList">
+                        <router-view></router-view>
+                    </keep-alive>
+                </transition>
+            </div>
         </div>
-
-      </div>
     </div>
 </template>
 
 <script>
-
-    import vHead from './Header'    //引入头部组件
-    import vSlidebar from './Slidebar' //引入左侧菜单组件
-    import bus from './bus'  //引入中间件
-
+    import vHead from './Header.vue';
+    import vSidebar from './Sidebar.vue';
+    import vTags from './Tags.vue';
+    import bus from './bus';
     export default {
-        name: "Home",
-        components: {
-          vHead,vSlidebar
+        data(){
+            return {
+                tagsList: [],
+                collapse: false
+            }
         },
-        data() {
-          return {
-            collapse: false,    //菜单栏折叠，内容区域是否跟着折叠
-          }
+        components:{
+            vHead, vSidebar, vTags
         },
         created(){
-          //内容区域是否折叠
-          bus.$on('collapse', flag=>{
-            this.collapse = flag
-          })
+            bus.$on('collapse', msg => {
+                this.collapse = msg;
+            })
 
-        },
+            // 只有在标签页列表里的页面才使用keep-alive，即关闭标签之后就不保存到内存中了。
+            bus.$on('tags', msg => {
+                let arr = [];
+                for(let i = 0, len = msg.length; i < len; i ++){
+                    msg[i].name && arr.push(msg[i].name);
+                }
+                this.tagsList = arr;
+            })
+        }
     }
 </script>
 
-<style scoped>
-  .content_box{
+<style>
+
+.content-box {
     position: absolute;
-    top: 50px;
-    right: 0;
-    bottom: 0;
     left: 175px;
-    transition: all .3s ease-in;
-    overflow-y: auto;
-  }
-  .content_collapse{
-    position: absolute;
-    top: 50px;
     right: 0;
+    top: 60px;
     bottom: 0;
+    padding-bottom: 30px;
+    -webkit-transition: left .3s ease-in-out;
+    transition: left .3s ease-in-out;
+    background: #f0f0f0;
+}
+
+.content {
+    width: auto;
+    height: 100%;
+    padding: 10px;
+    overflow-y: scroll;
+    box-sizing: border-box;
+}
+
+.content-collapse {
     left: 65px;
-    transition: all .3s ease-in;
-    overflow-y: auto;
-  }
-  .content{
-    padding: 25px 20px 20px;
-  }
+}
 
+.container {
+    padding: 30px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
 
-
-  .fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-  }
-  .fade-enter, .fade-leave-to{
-    opacity: 0;
-  }
 </style>
+
+
+
+
+
+

@@ -11,9 +11,14 @@ export default new Router(routes)
 
 
 // 页面刷新时，重新赋值用户信息
-if(JSON.parse(sessionStorage.getItem('userInfo'))){
-  store.commit('setUserInfo',JSON.parse(sessionStorage.getItem('userInfo')))
+if((sessionStorage.getItem('userInfo')) || sessionStorage.getItem('token')){
+
+  sessionStorage.getItem('userInfo') && store.commit('setUserInfo',sessionStorage.getItem('userInfo'));
+  sessionStorage.getItem('token') && store.commit('setToken',sessionStorage.getItem('token'));
+
 }
+
+
 
 
 

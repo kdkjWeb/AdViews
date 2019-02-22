@@ -6,9 +6,11 @@
 
 import Axios from 'axios';
 import store from "../store/index";
+import { Message } from 'element-ui';
 
 //配置API接口地址
 const API_ROOT = process.env.API_ROOT;
+
 
 Axios.defaults.baseURL = API_ROOT;
 Axios.defaults.timeout = 5000;
@@ -22,6 +24,7 @@ Axios.interceptors.request.use(
       //   config.headers.Authorization = `token ${store.state.token}`;
 
       config.headers['token'] = store.state.token;  //请求头设置token
+      config.headers['type'] = 0;  //请求头设置token
     }
     return config;
   },err=>{
@@ -35,7 +38,6 @@ Axios.interceptors.response.use(
     return response;
   },err=>{
     console.log(err)
-    console.log(666)
     if(err.response){
       switch (err.response.status) {
 
@@ -60,7 +62,18 @@ export default {
       Axios.get(url,{
         params: params
       }).then(res=>{
-        resolve(res.data)
+        // resolve(res.data)
+
+        if(res.data.code == 0){
+          resolve(res.data)
+        }else if(res.data.code == 500){
+          Message({
+            message: res.data.msg,
+            type: 'warning'
+          });
+          resolve(res.data)
+        }
+
       }).catch(err=>{
         reject(err)
       })
@@ -75,9 +88,21 @@ export default {
    */
 
   post: (url,data = {})=>{
+
     return new Promise((resolve,reject)=>{
       Axios.post(url,data).then(res=>{
-        resolve(res.data)
+        // resolve(res.data)
+
+        if(res.data.code == 0){
+          resolve(res.data)
+        }else if(res.data.code == 500){
+          Message({
+            message: res.data.msg,
+            type: 'warning'
+          });
+          resolve(res.data)
+        }
+
       }).catch(err=>{
         reject(err)
       })

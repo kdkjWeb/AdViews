@@ -26,11 +26,11 @@ import store from './store/index'
 
 
 //路由拦截
-router.beforeEach((to,from,next)=>{
+/*router.beforeEach((to,from,next)=>{
   if(to.path === '/login'){
     next();
   }else {
-    if(store.state.userInfo.id){
+    if(store.state.token){
       next();
     }else {
       next({
@@ -38,7 +38,7 @@ router.beforeEach((to,from,next)=>{
       })
     }
   }
-})
+})*/
 
 /* eslint-disable no-new */
 new Vue({

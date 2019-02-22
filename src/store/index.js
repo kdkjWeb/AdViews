@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 const state = {
   token: '',
-  userInfo: {}   //存储用户相关信息
+  userInfo: ''   //存储用户相关信息
 }
 
 
@@ -21,8 +21,9 @@ export default new Vuex.Store({
           state.token = data;
         },
         setUserInfo(state,data){
-            sessionStorage.userInfo = JSON.stringify(data);
-            state.userInfo = data
+            //sessionStorage.userInfo = JSON.stringify(data);
+          sessionStorage.userInfo = data;
+          state.userInfo = data
         }
     }
 })

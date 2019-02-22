@@ -15,18 +15,44 @@ export default {
       redirect: '/index',
       children: [
         {
-          path: '/hotel',
-          name: 'hotel',
-          component: resolve => require(['@/pages/Hotel'],resolve)
+          path: '/index',
+          name: 'index',
+          component: resolve => require(['@/pages/index'],resolve),
+          meta: { title: '系统首页' }
         },{
-          path: '/ad',
-          name: 'ad',
-          component: resolve => require(['@/pages/Ad'],resolve)
+          path: '/user',
+          name: 'user',
+          component: resolve => require(['@/pages/user'],resolve),
+          meta: { title: '用户管理' }
         },{
-          path: '/chartDetails',
-          name: 'chartDetails',
-          component: resolve => require(['@/pages/ChartDetails'],resolve)
+          path: '/role',
+          name: 'role',
+          component: resolve => require(['@/pages/role'],resolve),
+          meta: { title: '角色管理' }
+        },{
+          path: '/log',
+          name: 'log',
+          component: resolve => require(['@/pages/logs'],resolve),
+          meta: { title: '系统日志' }
+        },{
+          path: '/client',
+          name: 'client',
+          component: resolve => require(['@/pages/client'],resolve),
+          meta: { title: '客户资源管理 ' }
+        },{
+          path: '/clientDetails',
+          name: 'clientDetails',
+          component: resolve => require(['@/pages/clientDetails'],resolve),
+          meta: { title: '会员详情 ' }
+        },{
+          path: '/supplier',
+          name: 'supplier',
+          component: resolve => require(['@/pages/supplier'],resolve),
+          meta: { title: '供应商管理 ' }
         }
+
+
+
       ]
     },{
       path: '/login',

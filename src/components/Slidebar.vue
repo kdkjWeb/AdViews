@@ -42,13 +42,21 @@
       return{
         roleList: [
           {
-            icon: 'icon-binguan',
-            index: 'hotel',
-            title: '我的旅舍'
+            icon: 'icon-zhuye1',
+            index: 'index',
+            title: '系统首页'
           },{
-            icon: 'icon-guanggao',
-            index: 'ad',
-            title: '我的广告'
+            icon: 'icon-icon-test',
+            index: 'user',
+            title: '用户管理'
+          },{
+            icon: 'icon-jiaoseguanli-',
+            index: 'role',
+            title: '角色管理'
+          },{
+            icon: 'icon-drxx05',
+            index: 'logs',
+            title: '系统日志'
           }
         ],
         collapse: false,   //菜单栏是否折叠
@@ -64,13 +72,7 @@
 
     },
     mounted(){
-      this.roleList.forEach((item,index)=>{
-        if(this.getUserInfo.role.hostelExists && index === 0){
-          this.routerItem.push(item)
-        }else if (this.getUserInfo.role.adExists && index === 1) {
-          this.routerItem.push(item)
-        }
-      })
+     
 
     },
     methods: {
@@ -100,7 +102,7 @@
   .sidebar{
     position: fixed;
     left: 0;
-    top: 50px;
+    top: 70px;
     z-index: 99;
     width: 175px;
     height: 100%;

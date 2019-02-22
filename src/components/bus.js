@@ -1,10 +1,6 @@
-/**
- * @author 杨勇
- * @date 18/10/31
- * @Description:  抛出中间件
- */
 import Vue from 'vue';
 
+// 使用 Event Bus
 const bus = new Vue();
 
 export default bus;
