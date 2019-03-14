@@ -48,7 +48,7 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-
+                      console.log("表单验证通过")
                       this.$post('managerLogin',{
                         account: this.ruleForm.username,
                         password: this.ruleForm.password
@@ -84,7 +84,7 @@
 
 
 <style>
-.el-input-group__prepend{
+.login-wrap .el-input-group__prepend{
   padding: 0 10px;
 }
 </style>

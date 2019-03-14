@@ -49,6 +49,22 @@ export default {
           name: 'supplier',
           component: resolve => require(['@/pages/supplier'],resolve),
           meta: { title: '供应商管理 ' }
+        },{
+          path: '/order',
+          name: 'order',
+          component: resolve => require(['@/pages/order'],resolve),
+          meta: { title: '订单管理 ' }
+        },{
+          path: '/destination',
+          name: 'destination',
+          component: resolve => require(['@/pages/destination'],resolve),
+          meta: { title: '热门目的地 ' }
+        },
+        {
+          path: '/destinationTpl',
+          name: 'destinationTpl',
+          component: resolve => require(['@/pages/destinationTpl'],resolve),
+          meta: { title: '新增热门目的地 ' }
         }
 
 

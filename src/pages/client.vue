@@ -7,14 +7,14 @@
           <el-col :span="18">
             <div>
               <el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
-                <el-form-item label="供应商名称">
-                  <el-input v-model="formInline.spname" placeholder="请输入供应商名称" clearable></el-input>
+                <el-form-item label="姓名">
+                  <el-input v-model="formInline.mbname" placeholder="请输入客户姓名" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                  <el-input v-model="formInline.addr" placeholder="请输入地址" clearable></el-input>
+                <el-form-item label="手机号">
+                  <el-input v-model="formInline.phone" placeholder="请输入手机号" clearable></el-input>
                 </el-form-item>
-                <el-form-item label="货品信息">
-                  <el-input v-model="formInline.goods" placeholder="请输入货品信息" clearable></el-input>
+                <el-form-item label="身份证号">
+                  <el-input v-model="formInline.idcard" placeholder="请输入身份证号" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="onSubmitSearch">查询</el-button>
@@ -38,6 +38,7 @@
           tooltip-effect="dark"
           style="width: 100%"
           size="small"
+          @row-click="goClientDetails"
           border >
           <el-table-column
             v-for="(item,index) in tableList"
@@ -50,8 +51,8 @@
           </el-table-column>
           <el-table-column label="操作" width="180" align="center">
             <template slot-scope="scope">
-              <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button type="text" icon="el-icon-edit" @click.stop="handleEdit(scope.row)">编辑</el-button>
+              <el-button type="text" icon="el-icon-delete" class="red" @click.stop="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -80,42 +81,42 @@
         <el-form ref="form" :model="form" :rules="rules" label-width="120px" size="mini">
           <el-row>
             <el-col :span="8">
-              <el-form-item label="姓名" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="姓名" prop="mbname">
+                <el-input v-model="form.mbname" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="护照号" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="护照号" prop="passport">
+                <el-input v-model="form.passport" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="咨询次数" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="咨询次数" prop="asks">
+                <el-input v-model="form.asks" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="手机号" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="手机号" prop="phone">
+                <el-input v-model="form.phone" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="教育程度" prop="spname">
-                <el-select v-model="form.region" placeholder="请选择教育程度">
-                  <el-option label="本科以上" value="1"></el-option>
-                  <el-option label="本科" value="2"></el-option>
-                  <el-option label="专科" value="3"></el-option>
-                  <el-option label="高中" value="4"></el-option>
-                  <el-option label="初中" value="5"></el-option>
-                  <el-option label="初中以下" value="6"></el-option>
+              <el-form-item label="教育程度" prop="edu">
+                <el-select v-model="form.edu" placeholder="请选择教育程度">
+                  <el-option label="本科以上" value="本科以上"></el-option>
+                  <el-option label="本科" value="本科"></el-option>
+                  <el-option label="专科" value="专科"></el-option>
+                  <el-option label="高中" value="高中"></el-option>
+                  <el-option label="初中" value="初中"></el-option>
+                  <el-option label="初中以下" value="初中以下"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="是否成单" prop="spname">
-                <el-select v-model="form.region" placeholder="请选择是否成单">
+              <el-form-item label="是否成单" prop="isdone">
+                <el-select v-model="form.isdone" placeholder="请选择是否成单">
                   <el-option label="是" value="1"></el-option>
                   <el-option label="否" value="0"></el-option>
                 </el-select>
@@ -124,89 +125,89 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="性别" prop="spname">
-                <el-select v-model="form.region" placeholder="请选择性别">
+              <el-form-item label="性别" prop="gender">
+                <el-select v-model="form.gender" placeholder="请选择性别">
                   <el-option label="男" value="1"></el-option>
                   <el-option label="女" value="0"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="兴趣爱好" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="兴趣爱好" prop="habbits">
+                <el-input v-model="form.habbits" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="成单次数" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="年龄" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="通讯地址" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="成单金额" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="成单次数" prop="dones">
+                <el-input v-model="form.dones" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="邮箱" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="年龄" prop="age">
+                <el-input v-model="form.age" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="出生日期" prop="spname">
-                <el-date-picker type="date" placeholder="请选择出生日期" v-model="form.spname" style="width: 100%;"></el-date-picker>
+              <el-form-item label="通讯地址" prop="addr">
+                <el-input v-model="form.addr" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="历史旅游目的地" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="QQ号" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="微信号" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="星座" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="成单金额" prop="donemoney">
+                <el-input v-model="form.donemoney" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="身份证号" prop="spname">
-                <el-input v-model="form.spname" clearable></el-input>
+              <el-form-item label="邮箱" prop="email">
+                <el-input v-model="form.email" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="创建日期" prop="spname">
-                <el-date-picker type="date" placeholder="请选择创建日期" v-model="form.spname" style="width: 100%;"></el-date-picker>
+              <el-form-item label="出生日期" prop="birth">
+                <el-date-picker type="date" placeholder="请选择出生日期" v-model="form.birth" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="修改日期" prop="spname">
-                <el-date-picker type="date" placeholder="请选择修改日期" v-model="form.spname" style="width: 100%;"></el-date-picker>
+              <el-form-item label="历史旅游目的地" prop="travel">
+                <el-input v-model="form.travel" clearable></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="QQ号" prop="qq">
+                <el-input v-model="form.qq" clearable></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="微信号" prop="weixin">
+                <el-input v-model="form.weixin" clearable></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="星座" prop="star">
+                <el-input v-model="form.star" clearable></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="身份证号" prop="idcard">
+                <el-input v-model="form.idcard" clearable></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8" v-if="mbId">
+              <el-form-item label="创建日期" prop="cdate">
+                <el-date-picker disabled="" type="date" placeholder="请选择创建日期" v-model="form.cdate" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8" v-if="mbId">
+              <el-form-item label="修改日期" prop="updatetime">
+                <el-date-picker disabled="" type="date" placeholder="请选择修改日期" v-model="form.updatetime" value-format="yyyy-MM-dd HH:mm:ss" style="width: 100%;"></el-date-picker>
               </el-form-item>
             </el-col>
           </el-row>
@@ -233,44 +234,58 @@
 
       return{
         dialogTitle: '新增会员',   //弹出框标题
-        spId: '',    //供应商id
+        mbId: '',    //供应商id
         form: {
-          spname: '',  //供应商名称
-          addr: '',   //地址
-          phone: '',   //电话
-          qq: '',   //qq
-          weixin: '',   //微信号
+          mbname: '',  //姓名
+          passport: '',   //护照号
+          asks: '',   //咨询次数
+          phone: '',   //手机号
+          edu: '',   //教育程度
+          isdone: '',   //是否成单
+          gender: '',   //性别
+          habbits: '',   //爱好
+          dones: '',  //成单次数
+          age: '',  //年龄
+          addr: '',   //通讯地址
+          donemoney: '',   //成单金额
           email: '',   //邮箱
-          goods: '',   //货品信息
-          price: ''   //货价
+          birth: '',  //出生日期
+          travel: '',   //历史出游目的地
+          qq: '',  //qq号
+          star: '',   //星座
+          weixin: '',  //微信号
+          cdate: '',   //创建日期
+          idcard: '',  //省份证号
+          updatetime: '',   //修改日期
         },
         dialogVisible: false,  //是否显示遮罩层
         currentPage: 1, //当前第几页
         pageSize: 20,   //每页显示多少条
         total: 0,   //总共多少条数据
         formInline: {   //查询输入框数据
-          addr: '',
-          spname: '',
-          goods: ''
+          mbname: '',   //姓名
+          phone: '',   //手机号
+          idcard: ''   //身份证号
         },
         tableData: [],   //表格数据
         tableList: [   //表格的头部配置
-          {prop: 'spname', label: '供应商名称', width: '', align: ''},
-          {prop: 'addr', label: '地址', width: '', align: ''},
-          {prop: 'phone', label: '电话', width: '', align: ''},
-          {prop: 'qq', label: 'QQ', width: '', align: ''},
+          {prop: 'mbname', label: '姓名', width: '', align: ''},
+          {prop: 'phone', label: '手机号', width: '', align: ''},
+          {prop: 'gender', label: '性别', width: '', align: ''},
+          {prop: 'age', label: '年龄', width: '', align: ''},
+          {prop: 'cdate', label: '创建日期', width: '', align: ''},
+          {prop: 'idcard', label: '身份证号', width: '', align: ''},
+          {prop: 'qq', label: 'QQ号', width: '', align: ''},
           {prop: 'weixin', label: '微信号', width: '', align: ''},
           {prop: 'email', label: '邮箱', width: '', align: ''},
-          {prop: 'goods', label: '货品信息', width: '', align: ''},
-          {prop: 'price', label: '货价', width: '', align: ''},
         ],
 
         rules: {
-          spname: [
-            { required: true, message: '请输入供应商名称', trigger: 'blur' },
-            { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
+          mbname: [
+            { required: true, message: '请输入会员姓名', trigger: 'blur' },
+            { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
           ],
-          addr: [
+         /* addr: [
             { required: true, message: '请输入供应商地址', trigger: 'blur' },
             { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' }
           ],
@@ -295,7 +310,7 @@
           ],
           price: [
             { pattern: /^0\.([1-9]|\d[1-9])$|^[1-9]\d{0,8}\.\d{0,2}$|^[1-9]\d{0,8}$/, message: '请输入大于0并且保留两位小数' }
-          ],
+          ],*/
         }
       }
     },
@@ -315,20 +330,33 @@
       handleComfirm(formName){
         this.$refs[formName].validate((valid) => {
 
-          var url = this.spId ? '/supplier/updateSupplier' : '/supplier/addSupplier'
+          var url = this.mbId ? '/member/updateMember' : '/member/addMember'
 
 
           if (valid) {
             this.$post(url,{
-              spname: this.form.spname,
-              addr: this.form.addr,
+              mbname: this.form.mbname,
+              passport: this.form.passport,
+              asks: this.form.asks,
               phone: this.form.phone,
-              qq: this.form.qq,
-              weixin: this.form.weixin,
+              edu: this.form.edu,
+              isdone: this.form.isdone,
+              gender: this.form.gender,
+              habbits: this.form.habbits,
+              dones: this.form.dones,
+              age: this.form.age,
+              addr: this.form.addr,
+              donemoney: this.form.donemoney,
               email: this.form.email,
-              goods: this.form.goods,
-              price: this.form.price,
-              spId: this.spId ? this.spId : null
+              birth: this.form.birth,
+              travel: this.form.travel,
+              qq: this.form.qq,
+              star: this.form.star,
+              weixin: this.form.weixin,
+              cdate: this.form.cdate,
+              idcard: this.form.idcard,
+              update: this.form.updatetime,
+              mbId: this.mbId ? this.mbId : null
             }).then(res=>{
               console.log(res)
 
@@ -336,7 +364,7 @@
 
               if(res.code == 0){
                 this.$message({
-                  message: this.spId ? '编辑供应商成功！' : '添加供应商成功！',
+                  message: this.mbId ? '编辑会员成功！' : '添加会员成功！',
                   type: 'success'
                 });
                 this.getDataList();
@@ -350,14 +378,26 @@
       },
 
 
+      //查看会员详情
+      goClientDetails(row){
+
+        /*this.$router.push({
+          name: 'clientDetails',
+          params: {
+            id: row.mbId
+          }
+        })*/
+
+      },
+
       //获取表格数据
       getDataList(pageNum){
-        this.$post('supplier/queryByRecord',{
+        this.$post('/member/queryByRecord',{
           pageSize: this.pageSize,
           pageNum: pageNum ? pageNum : 1,
-          addr: this.formInline.addr ? this.formInline.addr : null,
-          goods: this.formInline.goods ? this.formInline.goods : null,
-          spname: this.formInline.spname ? this.formInline.spname : null,
+          mbname: this.formInline.mbname ? this.formInline.mbname : null,
+          phone: this.formInline.phone ? this.formInline.phone : null,
+          idcard: this.formInline.idcard ? this.formInline.idcard : null,
         }).then(res=>{
           if(res.code == 0){
             console.log(res)
@@ -376,7 +416,7 @@
       //新增供应商
       handleAddUser(){
         this.dialogVisible = true;
-        this.spId = '';
+        this.mbId = '';
         this.$nextTick(() => {
           this.$refs.form.resetFields();
         });
@@ -395,17 +435,19 @@
         });
 
         this.dialogVisible = true;
-        this.dialogTitle = '编辑供应商';
+        this.dialogTitle = '编辑会员';
 
 
-        this.spId = row.spId;
+        this.mbId = row.mbId;
 
-        if(this.spId){
-          this.$get('/supplier/queryById',{
-            id: this.spId
+        if(this.mbId){
+          this.$get('/member/queryById',{
+            id: this.mbId
           }).then(res=>{
-            console.log(res)
+
             if(res.code == 0){
+              res.data.gender = res.data.gender + '';
+              res.data.isdone = res.data.isdone + '';
               this.form = res.data;
             }
           })
@@ -418,13 +460,13 @@
 
       //删除表格某一行
       handleDelete(row){
-        this.$confirm('此操作将永久删除该供应商, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该会员, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$get('/supplier/deleteById',{
-            id: row.spId
+          this.$get('/member/deleteById',{
+            id: row.mbId
           }).then(res=>{
             if(res.code == 0){
               this.$message({

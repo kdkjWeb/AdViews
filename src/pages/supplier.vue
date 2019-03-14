@@ -96,11 +96,17 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="form.email" clearable></el-input>
           </el-form-item>
-          <el-form-item label="货品信息" prop="goods">
-            <el-input v-model="form.goods" clearable></el-input>
+          <el-form-item label="服务类型" prop="serviceType">
+            <el-select v-model="form.serviceType" placeholder="请选择服务类型">
+              <el-option label="机票" value="机票"></el-option>
+              <el-option label="酒店" value="酒店"></el-option>
+              <el-option label="景区" value="景区"></el-option>
+              <el-option label="一日游" value="一日游"></el-option>
+              <el-option label="wifi和电话卡" value="wifi和电话卡"></el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item label="货价" prop="price">
-            <el-input v-model="form.price" clearable></el-input>
+          <el-form-item label="描述" prop="goods">
+            <el-input type="textarea" v-model="form.goods" clearable></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -129,8 +135,8 @@
           qq: '',   //qq
           weixin: '',   //微信号
           email: '',   //邮箱
-          goods: '',   //货品信息
-          price: ''   //货价
+          goods: '',   //描述
+          serviceType: ''   //服务类型
         },
         dialogVisible: false,  //是否显示遮罩层
         currentPage: 1, //当前第几页
@@ -149,8 +155,8 @@
           {prop: 'qq', label: 'QQ', width: '', align: ''},
           {prop: 'weixin', label: '微信号', width: '', align: ''},
           {prop: 'email', label: '邮箱', width: '', align: ''},
-          {prop: 'goods', label: '货品信息', width: '', align: ''},
-          {prop: 'price', label: '货价', width: '', align: ''},
+          {prop: 'serviceType', label: '服务类型', width: '', align: ''},
+          {prop: 'goods', label: '描述', width: '', align: ''},
         ],
 
         rules: {
@@ -180,10 +186,7 @@
           ],
           goods: [
             { min: 1, max: 200, message: '长度在 1 到 200 个字符', trigger: 'blur' }
-          ],
-          price: [
-            { pattern: /^0\.([1-9]|\d[1-9])$|^[1-9]\d{0,8}\.\d{0,2}$|^[1-9]\d{0,8}$/, message: '请输入大于0并且保留两位小数' }
-          ],
+          ]
         }
       }
     },
@@ -216,6 +219,7 @@
               email: this.form.email,
               goods: this.form.goods,
               price: this.form.price,
+              serviceType: this.form.serviceType,
               spId: this.spId ? this.spId : null
             }).then(res=>{
                 console.log(res)
@@ -276,7 +280,6 @@
       //编辑表格单行内容
       handleEdit(row){
 
-        console.log(row)
 
         this.$nextTick(() => {
           this.$refs.form.resetFields();
@@ -294,6 +297,7 @@
             }).then(res=>{
                 console.log(res)
                 if(res.code == 0){
+                  res.data.serviceType = res.data.serviceType + '';
                   this.form = res.data;
                 }
             })
