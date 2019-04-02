@@ -13,7 +13,7 @@ const API_ROOT = process.env.API_ROOT;
 
 
 Axios.defaults.baseURL = API_ROOT;
-Axios.defaults.timeout = 5000;
+Axios.defaults.timeout = 20000;
 Axios.defaults.withCredentials = true;
 
 //http request 拦截器
@@ -23,7 +23,7 @@ Axios.interceptors.request.use(
 
       //   config.headers.Authorization = `token ${store.state.token}`;
 
-      config.headers['token'] = store.state.token;  //请求头设置token
+      // config.headers['token'] = store.state.token;  //请求头设置token
       config.headers['type'] = 0;  //请求头设置token
     }
     return config;
@@ -106,6 +106,51 @@ export default {
         reject(err)
       })
     })
-  }
+  },
+
+
+  delete: (url,params = {})=>{
+    return new Promise((resolve,reject)=>{
+      Axios.delete(url,{
+        params: params
+      }).then(res=>{
+        // resolve(res.data)
+
+        if(res.data.code == 0){
+          resolve(res.data)
+        }else if(res.data.code == 500){
+          Message({
+            message: res.data.msg,
+            type: 'warning'
+          });
+          resolve(res.data)
+        }
+
+      }).catch(err=>{
+        reject(err)
+      })
+    })
+  },
+
+  put: (url,data = {})=>{
+    return new Promise((resolve,reject)=>{
+      Axios.put(url,data).then(res=>{
+        // resolve(res.data)
+
+        if(res.data.code == 0){
+          resolve(res.data)
+        }else if(res.data.code == 500){
+          Message({
+            message: res.data.msg,
+            type: 'warning'
+          });
+          resolve(res.data)
+        }
+
+      }).catch(err=>{
+        reject(err)
+      })
+    })
+  },
 
 }

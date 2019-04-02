@@ -324,6 +324,7 @@ export default {
             this.isPwdShow = true;
             this.isUserShow = true;
             this.userId = '';
+            this.dialogTitle = '新增用户';
             /*this.form.userName = '';
             this.form.role = '';
             this.form.status = '';

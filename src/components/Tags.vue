@@ -59,7 +59,6 @@
             // 设置标签
             setTags(route){
 
-
                 const isExist = this.tagsList.some(item => {
                     return item.path === route.fullPath;
                 })
@@ -67,11 +66,20 @@
                     if(this.tagsList.length >= 8){
                         this.tagsList.shift();
                     }
-                    this.tagsList.push({
+
+                    if(route.meta.keepalive){
+                      this.tagsList.push({
                         title: route.meta.title,
                         path: route.fullPath,
                         name: route.matched[1].components.default.name
-                    })
+                      })
+                    }
+
+                    /*this.tagsList.push({
+                        title: route.meta.title,
+                        path: route.fullPath,
+                        name: route.matched[1].components.default.name
+                    })*/
                 }
                 bus.$emit('tags', this.tagsList);
             },

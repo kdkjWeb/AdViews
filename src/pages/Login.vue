@@ -68,6 +68,10 @@
                           //跳转到系统首页
                            this.$router.push('/');
                         }
+                      },err=>{
+                        this.$message.error('系统异常，登录失败!');
+                      }).catch(err=>{
+                        this.$message.error('系统异常，登录失败!');
                       })
 
                       //  this.$router.push('/');

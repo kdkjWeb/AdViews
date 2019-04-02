@@ -7,7 +7,7 @@
           <el-col :span="18">
             <div>
               <el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
-                <el-form-item label="目的地">
+                <el-form-item label="城市名">
                   <el-input v-model="formInline.destination" placeholder="请输入目的地" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -18,7 +18,7 @@
           </el-col>
           <el-col :span="6">
             <div class="addUser">
-              <el-button size="mini" type="primary" class="handle-del mr10" @click="handleDestination">新增热门目的地</el-button>
+              <el-button size="mini" type="primary" class="handle-del mr10" @click="handleDestination">新增精品案例</el-button>
             </div>
           </el-col>
         </el-row>
@@ -43,21 +43,6 @@
           >
           </el-table-column>
 
-          <el-table-column
-            prop="tag"
-            label="景区"
-            align="center">
-            <template slot-scope="scope">
-              <el-tag v-for="(items,index) in scope.row.places" :key="index">{{items}}</el-tag>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            prop="cdate"
-            label="创建时间"
-            width="180"
-            align="center">
-          </el-table-column>
           <el-table-column label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-button type="text" icon="el-icon-view" @click.stop="handleView(scope.row)">预览</el-button>
@@ -82,6 +67,7 @@
       <!-- end分页 -->
     </div>
 
+
     <el-dialog
       title="精品案例详情预览"
       :visible.sync="dialogVisible"
@@ -95,28 +81,68 @@
                 <img :src="item" alt="" width="100%" height="130">
               </Slide>
             </Swiper>
-            <div class="bannerWrap">
-              <h3>{{viewData.title}}</h3>
-              <p>{{viewData.intro}}</p>
-            </div>
           </div>
           <!--end 轮播图-->
 
-          <div class="dayList">
-            <div class="dayItem" v-for="item,index in viewData.spotList" :key="index">
-              <div class="dayItem_top">
-                <div class="dayIndex">{{index+1}}</div>
-                <div class="dayInfo">
-                  <h5>{{item.title}}</h5>
-                  <p>{{item.subtitle}}</p>
-                </div>
-              </div>
-              <div v-html="item.spotDesc"></div>
+          <!--start 基本信息-->
+          <div class="basicInfo">
+            <h4>￥<span>{{viewData.price}}</span>/人起</h4>
+            <p>{{viewData.title}}</p>
+            <div class="basicInfo_bottom">
+              <div>仅剩<span>{{viewData.remains}}</span>席 </div>
+              <div><span>{{viewData.starttime}}</span>出发</div>
             </div>
           </div>
+          <!--end 基本信息-->
+          <div class="bgHr"></div>
+
+          <!--start 底部详细信息-->
+          <div>
+            <!--start  选项卡bar-->
+            <div class="cardBar">
+              <div @click="changeBar(0)"><span :class="activeBar == 0 ? 'activeBar' : ''">行程特色</span></div>
+              <div @click="changeBar(1)"><span :class="activeBar == 1 ? 'activeBar' : ''">推荐玩法</span></div>
+              <div @click="changeBar(2)"><span :class="activeBar == 2 ? 'activeBar' : ''">报价说明</span></div>
+            </div>
+            <!--end 选项卡bar-->
+            <div class="barCon" v-if="activeBar == 0">
+              <img :src="item" alt="" v-for="item,index in viewData.tripImgList">
+            </div>
+            <div class="barCon recommend" v-if="activeBar == 1">
+
+              <div class="dayItem" v-for="item,index in viewData.daysList" :key="index">
+                <h5><span class="dayIndex">DAY{{index+1}}</span><span>{{item.title}}</span></h5>
+                <div>活动</div>
+                <div class="actInfo">{{item.actInfo}}</div>
+                <div>
+                  <div class="famousItem" v-for="items,index in item.lableList" :key="index">
+                    <div><span>景点：</span>{{items.tripName}}</div>
+                    <div v-html="items.tripDesc"></div>
+                    <div><span>地址：</span>{{items.addr}}</div>
+                    <div><span>时间：</span>{{items.opentime}}</div>
+                  </div>
+                </div>
+                <div class="holte">
+                  <div><span>酒店：</span>{{item.hotelName}}</div>
+                  <div class="holteWrap">
+                    <div class="holteWrap_img"><img :src="item.hotelImg" alt=""></div>
+                    <div class="holteWrap_info">
+                      <div class="holteWrap_info_title">{{item.hotelIntro}}</div>
+                      <div><span>地址：</span>{{item.hotelAddr}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="barCon" v-if="activeBar == 2" v-html="viewData.offerDesc"></div>
+          </div>
+          <!--end 底部详细信息-->
+          
         </div>
       </div>
     </el-dialog>
+
 
 
   </div>
@@ -124,17 +150,17 @@
 
 <script>
   import { Swiper, Slide } from 'vue-swiper-component';
-
   export default {
-    name: 'destination',
+    name: 'viewpoint',
     components: {
       Swiper,
       Slide
     },
     data(){
+
       return{
+        activeBar: 0,
         dialogVisible: false,
-        viewData: {},
         currentPage: 1, //当前第几页
         pageSize: 20,   //每页显示多少条
         total: 0,   //总共多少条数据
@@ -143,11 +169,16 @@
         },
         tableData: [],   //表格数据
         tableList: [   //表格的头部配置
-          {prop: 'cityname', label: '中文目的地', width: '', align: ''},
-          {prop: 'cityEnglishname', label: '英文目的地', width: '', align: ''},
+          {prop: 'cityname', label: '城市名', width: '', align: ''},
           {prop: 'title', label: '标题', width: '', align: ''},
-          {prop: 'intro', label: '描述', width: '', align: ''},
+          {prop: 'playType', label: '副标题', width: '', align: ''},
+          {prop: 'intro', label: '介绍', width: '', align: ''},
+          {prop: 'price', label: '人均费用', width: '', align: ''},
+          {prop: 'remains', label: '仅剩席位', width: '', align: ''},
+          {prop: 'starttime', label: '出游时间', width: '', align: ''},
+
         ],
+        viewData: {}
 
       }
     },
@@ -158,12 +189,17 @@
         this.getDataList();
       },
 
+      changeBar(val){
+        this.activeBar = val;
+      },
+
       //预览
       handleView(val){
-        console.log(val)
-        if(val.hddid){
-          this.$get('/hotDestDesc/queryById',{
-            id: val.hddid
+
+        if(val.bcid){
+
+          this.$get('/bestCase/queryById',{
+            id: val.bcid
           }).then(res=>{
             if(res.code ==0 ){
 
@@ -176,11 +212,12 @@
             this.$message.error('预览失败，请稍后再试!');
           })
         }
+
       },
 
       //获取表格数据
       getDataList(pageNum){
-        this.$get('/hotDestDesc/queryByRecord',{
+        this.$get('/bestCase/queryByRecord',{
           pageSize: this.pageSize,
           pageNum: pageNum ? pageNum : 1,
           cityname: this.formInline.destination ? this.formInline.destination : null,
@@ -211,23 +248,19 @@
       //新增供应商
       handleDestination(){
         this.$router.push({
-          name: 'destinationTpl'
+          name: 'viewpointTpl'
         })
       },
 
       //编辑
       handleEdit(row){
         console.log(row)
-
-        if(row.hddid){
-          this.$router.push({
-            name: 'destinationTpl',
-            query: {
-              id: row.hddid
-            }
-          })
-        }
-
+        this.$router.push({
+          name: 'viewpointTpl',
+          query: {
+            id: row.bcid
+          }
+        })
       },
 
 
@@ -239,8 +272,8 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$delete('/hotDestDesc/deleteById',{
-            id: row.hddid
+          this.$delete('/bestCase/deleteById',{
+            id: row.bcid
           }).then(res=>{
             if(res.code == 0){
               this.$message({
@@ -266,22 +299,24 @@
       },
 
 
+
     },
     mounted(){
       //获取表格数据
       this.getDataList();
 
 
+
     }
   }
 </script>
 
-
 <style>
-  .dayItem img{
+  .famousItem img{
     width: 100%;
   }
 </style>
+
 <style scoped>
   .phone{
     position: relative;
@@ -299,74 +334,117 @@
     height: 551px;
     /*border: 1px solid #ddd;*/
     box-sizing: border-box;
-    background: #eee;
-    overflow: auto;
+    background: #fff;
   }
   .banner{
     width: 100%;
     height: 130px;
   }
-  .bannerWrap{
-    position: relative;
-    top: -30px;
-    z-index: 9999;
-    width: 260px;
-    margin: 0 auto;
-    background: #fff;
-    border-radius: 5px;
-    padding: 8px;
+  .basicInfo{
+    padding: 10px;
+  }
+  .basicInfo h4{
+    color: #0C83B0;
+  }
+  .basicInfo p{
+    font-weight: bold;
+  }
+  .basicInfo_bottom{
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-between;
     font-size: 12px;
+  }
+  .bgHr{
+    width: 100%;
+    height: 5px;
+    background: #ddd;
+  }
+  .cardBar{
+    display: flex;
+    display: -webkit-flex;
+    padding: 10px 0 0;
+    border-bottom: 1px solid #ddd;
+  }
+  .cardBar div{
+    flex: 1;
+    text-align: center;
+  }
+  .activeBar{
+    border-bottom: 3px solid #0C83B0;
+    padding: 0 3px 2px;
+  }
+  .barCon{
+    padding: 0 10px 10px;
+    height: 285px;
+    overflow: auto;
+  }
+  .barCon img{
+    width: 100% !important;
+    height: auto;
+  }
+
+  .recommend{
+    font-size: 12px;
+    /*margin-left: 10px;*/
+    /*margin-top: 10px;*/
     box-sizing: border-box;
   }
-  .bannerWrap h3{
-    font-weight: bold;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
+  .cirle{
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 15px;
+    color: #fff;
+    background: #0C83B0;
+    font-size: 10px;
   }
-  .bannerWrap p{
+  .dayIndex{
+    padding-right: 5px;
+  }
+  .actInfo{
+    padding: 5px 0;
+  }
+  .famousItem{
+    margin-bottom: 10px;
+  }
+  .holteWrap{
+    display: flex;
+    display: -webkit-flex;
+    margin-top: 5px;
+  }
+  .holteWrap_img{
+    width: 70px;
+    height: 70px;
+    padding-right: 5px;
+  }
+  .holteWrap_img img{
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .holteWrap_info{
+    flex: 1;
+  }
+  .holteWrap_info_title{
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
-  }
-  .dayList{
-    margin-top: 100px;
-    padding: 5px;
+
   }
   .dayItem{
-    background: #fff;
-    padding: 10px 5px;
-    box-sizing: border-box;
-    border-radius: 8px;
+    margin-top: 30px;
   }
-  .dayItem_top{
-    display: flex;
-    display: -webkit-flex;
-    justify-content: space-between;
+  .dayItem:nth-child(1){
+    margin-top: 10px;
   }
-  .dayIndex{
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 30px;
-    background:radial-gradient(circle,rgba(0,255,255,1),rgba(13,131,177,1));
-    border:1px solid rgba(11, 107, 144, 1);
-    font-size: 12px;
-    margin-right: 5px;
-    color: #fff;
+  .dayItem h5 span:first-child{
+    color: #0C83B0;
   }
-  .dayInfo{
-    width: calc(100% - 50px);
-    flex: 1;
-  }
-  .dayInfo p{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+
 
 
 

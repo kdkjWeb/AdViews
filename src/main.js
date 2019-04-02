@@ -20,6 +20,9 @@ Vue.prototype.$echarts = echarts;
  import Server from './server/index';
 Vue.prototype.$get = Server.get;
 Vue.prototype.$post = Server.post;
+Vue.prototype.$delete = Server.delete;
+Vue.prototype.$put = Server.put;
+
 
 //引入store
 import store from './store/index'

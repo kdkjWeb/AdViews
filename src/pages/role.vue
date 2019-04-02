@@ -85,7 +85,7 @@
 
 <script>
   export default {
-    name: 'user',
+    name: 'role',
     data(){
       return{
         dialogTitle: '新增角色',

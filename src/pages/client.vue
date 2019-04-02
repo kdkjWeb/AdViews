@@ -127,8 +127,9 @@
             <el-col :span="8">
               <el-form-item label="性别" prop="gender">
                 <el-select v-model="form.gender" placeholder="请选择性别">
+                  <el-option label="未知" value="0"></el-option>
                   <el-option label="男" value="1"></el-option>
-                  <el-option label="女" value="0"></el-option>
+                  <el-option label="女" value="2"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -405,7 +406,16 @@
 
             let arr = res.data.list;
             arr.forEach((e,index)=>{
-              arr[index].status = e.status == 1 ? '启用' : '禁用'
+              arr[index].status = e.status == 1 ? '启用' : '禁用';
+
+              if(arr[index].gender == 1){
+                arr[index].gender = '男';
+              }else if(arr[index].gender == 2){
+                arr[index].gender = '女';
+              }else if(arr[index].gender == 0){
+                arr[index].gender = '未知';
+              }
+
             })
 
             this.tableData = JSON.parse(JSON.stringify(arr));

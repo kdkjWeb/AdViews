@@ -50,7 +50,7 @@
                   <el-col :span="6">
                     <div class="addUser">
                       <el-button size="mini" type="primary" class="handle-del mr10" @click="handleAddUser">新增</el-button>
-                      <el-button size="mini" type="primary" class="handle-del mr10" @click="handleAddUser">导出</el-button>
+                      <el-button size="mini" type="primary" class="handle-del mr10" @click="handleExport">导出</el-button>
                     </div>
                   </el-col>
                 </el-row>
@@ -79,9 +79,10 @@
             :show-overflow-tooltip="true"
           >
           </el-table-column>
-          <el-table-column label="操作" width="180" align="center">
+          <el-table-column label="操作" width="240" align="center">
             <template slot-scope="scope">
               <el-button type="text" icon="el-icon-edit" @click.stop="handleEdit(scope.row)">编辑</el-button>
+              <el-button type="text" icon="el-icon-document" @click.stop="handleSetting(scope.row)">行程管理</el-button>
               <el-button type="text" icon="el-icon-delete" class="red" @click.stop="handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -297,6 +298,36 @@
         this.getDataList();
       },
 
+      //导出
+      handleExport(){
+        let path = this.$store.state.baseUrl;
+        let href = path + '/order/downLoadOrderExcel'
+        let json = {};
+
+
+        Object.keys(this.formInline).forEach((key,index)=>{
+          if(this.formInline[key] != '' && key != 'time'){
+            json[key] = this.formInline[key]
+          }else if(this.formInline.time.length > 0 && key == 'time'){
+            json.beginPlayTime =  this.formInline.time[0];
+            json.endPlayTime =  this.formInline.time[1];
+          }
+        })
+
+        if(Object.keys(json).length == 0){
+          href = href + '?' + 'pageSize' + '=' +0 + '&pageNum' + '=' +1
+        }else{
+          href = href + '?'+ 'pageSize' + '=' +0;
+          Object.keys(json).forEach((key,index) => {
+            if(json[key] != ''){
+              href = href+'&'+key+'='+json[key];
+            }
+          });
+        }
+
+        location.href = href;
+      },
+
       //弹出框取消按钮
       handleCancle(){
         this.dialogVisible = false;
@@ -357,7 +388,7 @@
           orUsername: this.formInline.orUsername ? this.formInline.orUsername : null,
           orPhone: this.formInline.orPhone ? this.formInline.orPhone : null,
           beginPlayTime: this.formInline.time ? this.formInline.time[0] : null,
-          endPlayTime: this.formInline.time ? this.formInline.time[0] : null,
+          endPlayTime: this.formInline.time ? this.formInline.time[1] : null,
         }).then(res=>{
           if(res.code == 0){
             console.log(res)
@@ -369,6 +400,12 @@
             })
 
             this.tableData = JSON.parse(JSON.stringify(arr));
+          }
+        },err=>{
+          this.$message.error('数据获取失败，请稍后再试!');
+        }).catch(err=>{
+          err=>{
+            this.$message.error('数据获取失败，请稍后再试!');
           }
         })
       },
@@ -441,6 +478,17 @@
             message: '已取消删除'
           });
         });
+      },
+
+      //跳转到行程管理
+      handleSetting(val){
+        console.log(val)
+        this.$router.push({
+          name: 'travelList',
+          query: {
+            id: val.ordersid
+          }
+        })
       },
 
       //当前第几页

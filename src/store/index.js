@@ -5,7 +5,10 @@ Vue.use(Vuex)
 
 const state = {
   token: '',
-  userInfo: ''   //存储用户相关信息
+  userInfo: '',   //存储用户相关信息
+  // baseUrl: 'http://192.168.101.51:8080/',
+  // baseUrl: 'http://39.96.11.70:8080/travel/'
+  baseUrl: process.env.API_ROOT
 }
 
 

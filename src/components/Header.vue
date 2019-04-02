@@ -44,11 +44,23 @@
         methods:{
             // 用户名下拉菜单选择事件
             handleCommand(command) {
-                if(command == 'loginout'){
-                    // localStorage.removeItem('ms_username');
-                    sessionStorage.removeItem('userInfo')
-                    this.$router.push('/login');
+
+              this.$get('/logout',{}).then(res=>{
+                if(res.code == 0){
+                  sessionStorage.removeItem('userInfo')
+                  this.$router.push('/login');
                 }
+              },err=>{
+                this.$message.error('系统异常，请稍后再试!');
+              }).catch(err=>{
+                this.$message.error('系统异常，请稍后再试!');
+              })
+
+                // if(command == 'loginout'){
+                //     // localStorage.removeItem('ms_username');
+                //     sessionStorage.removeItem('userInfo')
+                //     this.$router.push('/login');
+                // }
             },
             // 侧边栏折叠
             collapseChage(){
