@@ -125,6 +125,12 @@ export default {
           name: 'wifiPhone',
           component: resolve => require(['@/pages/wifiPhone'],resolve),
           meta: { title: 'WIFI电话卡', keepalive: true}
+        },
+        {
+          path: '/test',
+          name: 'test',
+          component: resolve => require(['@/pages/demo'],resolve),
+          meta: { title: '测试', keepalive: true}
         }
 
 

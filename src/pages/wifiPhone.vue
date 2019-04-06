@@ -8,7 +8,7 @@
             <div>
               <el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
                 <el-form-item label="目的地">
-                  <el-input v-model="formInline.user" placeholder="请输入目的地" clearable></el-input>
+                  <el-input v-model="formInline.destination" placeholder="请输入目的地" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="onSubmitSearch">查询</el-button>
@@ -74,43 +74,43 @@
         <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="mini">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="目的地" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="目的地" prop="destination">
+                <el-input v-model="form.destination" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="标题" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="标题" prop="title">
+                <el-input v-model="form.title" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="供应商" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="供应商" prop="supplier">
+                <el-input v-model="form.supplier" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="价格" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="价格" prop="price">
+                <el-input v-model="form.price" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="描述" prop="userName">
-                <el-input type="textarea" v-model="form.userName" clearable></el-input>
+              <el-form-item label="描述" prop="detail">
+                <el-input type="textarea" v-model="form.detail" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
-              <el-form-item label="取还地点" prop="userName">
-                <el-input type="textarea" v-model="form.userName" clearable></el-input>
+              <el-form-item label="取还地点" prop="getAddress">
+                <el-input type="textarea" v-model="form.getAddress" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -134,32 +134,30 @@
     name: 'wifiPhone',
     data(){
       return{
-        dialogTitle: '新增机票',   //弹出框标题
-        imageUrl: '',
-        isPwdShow: false,
-        isUserShow: false,
-        userId: '',    //用户id
+        dialogTitle: '新增WIFI电话卡',   //弹出框标题
+        id: '',    //用户id
         form: {
-          userName: '',  //用户名
-          password: '',   //密码
-          sussesspwd: '',   //确认密码
-          role: '',   //角色
-          status: ''   //状态
+          destination: '',  //目的地
+          title: '',   //标题
+          supplier: '',   //供应商
+          price: '',   //价格
+          detail: '',   //描述
+          getAddress: '',   //取还地点
         },
         dialogVisible: false,  //是否显示遮罩层
         currentPage: 1, //当前第几页
         pageSize: 20,   //每页显示多少条
         total: 0,   //总共多少条数据
         formInline: {   //查询输入框数据
-          user: ''
+          destination: ''
         },
         tableData: [],   //表格数据
-        roleList: [],   //角色列表
         tableList: [   //表格的头部配置
-          {prop: 'account', label: '用户名', width: '', align: ''},
-          {prop: 'role', label: '角色', width: '', align: ''},
-          {prop: 'cdate', label: '创建时间', width: '', align: ''},
-          {prop: 'status', label: '状态', width: '', align: ''},
+          {prop: 'destination', label: '目的地', width: '', align: ''},
+          {prop: 'title', label: '标题', width: '', align: ''},
+          {prop: 'supplier', label: '供应商', width: '', align: ''},
+          {prop: 'price', label: '价格', width: '', align: ''},
+          {prop: 'crtTime', label: '创建时间', width: '', align: ''}
         ],
         rules: {
 
@@ -181,82 +179,75 @@
 
       //弹出框确认按钮
       handleComfirm(formName){
-
-        if(this.isPwdShow && (!this.isUserShow) && this.userId){   //修改密码
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              this.$get('manager/updatePwd',{
-                id: this.userId,
-                pwd: this.form.password
-              }).then(res=>{
-                if(res.code == 0){
-                  this.dialogVisible = false;
-                  this.$message({
-                    message: '修改密码成功！',
-                    type: 'success'
-                  });
-                }
-              })
-            } else {
-              console.log('error submit!!');
-              return false;
-            }
-          })
-        }else {    //新增用户、修改用户    如果存在id就是修改用户否则就是新增用户
-          var url = this.userId ? 'manager/updateManager' : 'manager/addManager';
-
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              this.$post(url,{
-                mgId: this.userId ? this.userId : null,
-                account: this.form.userName,
-                addPwd: this.form.password ? this.form.password : null,
-                rId: this.form.role,
-                status: this.form.status
-              }).then(res=>{
-
-                if(res.code == 0){
-                  this.dialogVisible = false;
-
-                  this.$message({
-                    message: this.userId ? '修改用户成功' : '新增用户成功',
-                    type: 'success'
-                  });
-
-                  this.getDataList();
-
-                }
-              })
-            } else {
-              console.log('error submit!!');
-              return false;
-            }
-          });
-        }
-
-
-
-
-        // this.dialogVisible = false;
+          var url = this.id ? '/wifyPhone/updateModel' : '/wifyPhone/insertModel';
+          if(this.id){   // id存在表示修改
+            this.$put(url,{
+              destination: this.form.destination,  //目的地
+              title: this.form.title,   //标题
+              supplier: this.form.supplier,   //供应商
+              price: this.form.price,   //价格
+              detail: this.form.detail,   //描述
+              getAddress: this.form.getAddress,   //取还地点
+              id: this.id
+            }).then(res=>{
+              this.$message({
+                type: 'success',
+                message: 'WIFI电话卡编辑成功!'
+              });
+              this.dialogVisible = false;
+              this.getDataList();
+            },err=>{
+              this.$message({
+                message: 'WIFI电话卡编辑失败',
+                type: 'warning'
+              });
+            }).catch(err=>{
+              this.$message({
+                message: 'IFI电话卡编辑失败',
+                type: 'warning'
+              });
+            })
+          }else {  // id 不存在表示新增
+            this.$post(url,{
+              destination: this.form.destination,  //目的地
+              title: this.form.title,   //标题
+              supplier: this.form.supplier,   //供应商
+              price: this.form.price,   //价格
+              detail: this.form.detail,   //描述
+              getAddress: this.form.getAddress,   //取还地点
+            }).then(res=>{
+              this.$message({
+                type: 'success',
+                message: 'WIFI电话卡新增成功!'
+              });
+              this.dialogVisible = false;
+              this.getDataList();
+            },err=>{
+              this.$message({
+                message: 'IFI电话卡新增失败',
+                type: 'warning'
+              });
+            }).catch(err=>{
+              this.$message({
+                message: 'IFI电话卡新增失败',
+                type: 'warning'
+              });
+            })
+          }
       },
 
 
       //获取表格数据
       getDataList(pageNum){
-        this.$get('manager/queryByRecord',{
+        this.$get('/wifyPhone/queryByRecord',{
           pageSize: this.pageSize,
           pageNum: pageNum ? pageNum : 1,
-          account: this.formInline.user ? this.formInline.user : null,
+          destination: this.formInline.destination ? this.formInline.destination : null,
         }).then(res=>{
           if(res.code == 0){
             this.total = res.data.total;
 
-            let arr = res.data.list;
-            arr.forEach((e,index)=>{
-              arr[index].status = e.status == 1 ? '启用' : '禁用'
-            })
-
-            this.tableData = JSON.parse(JSON.stringify(arr));
+            this.tableData = res.data.list;
           }
         })
       },
@@ -264,15 +255,8 @@
       //新增用户
       handleAddUser(){
         this.dialogVisible = true;
-        this.isPwdShow = true;
-        this.isUserShow = true;
-        this.userId = '';
-        this.dialogTitle = '新增机票';
-        /*this.form.userName = '';
-        this.form.role = '';
-        this.form.status = '';
-        this.form.password = '';
-        this.form.sussesspwd = '';*/
+        this.id = '';
+        this.dialogTitle = '新增WIFI电话卡';
 
 
         this.$nextTick(() => {
@@ -291,37 +275,31 @@
           this.$refs.form.resetFields();
         });
 
-        this.dialogVisible = true;
-        this.dialogTitle = '编辑机票';
-        this.isPwdShow = false;
-        this.isUserShow = true;
 
-        this.userId = row.mgId;
+        this.dialogTitle = '编辑WIFI电话卡';
+
+        this.id = row.id;
 
         //获取用户详情
-        this.$get('manager/queryById',{
-          id: row.mgId
+        this.$get('/wifyPhone/selectById',{
+          id: row.id
         }).then(res=>{
           if(res.code == 0){
-
-            this.form.userName = res.data.account;
-            this.form.password = res.data.pwd;
-            this.form.sussesspwd = res.data.pwd;
-            this.form.role = res.data.rId;
-            this.form.status = res.data.status + '';
+            this.dialogVisible = true;
+            this.form = res.data;
           }
         })
       },
 
       //删除表格某一行
       handleDelete(row){
-        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该WIFI电话卡, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$get('manager/deleteById',{
-            id: row.mgId
+          this.$delete('/wifyPhone/deleteById',{
+            id: row.id
           }).then(res=>{
             if(res.code == 0){
               this.$message({
@@ -346,23 +324,12 @@
         this.getDataList(this.currentPage);
       },
 
-      //获取角色列表
-      getRoleList(){
-        this.$get('role/queryByRecord',{
-          pageSize: 0,
-        }).then(res=>{
-          if(res.code == 0){
-            this.roleList = res.data.list;
-          }
-        })
-      }
+
     },
     mounted(){
       //获取表格数据
       this.getDataList();
 
-      //获取角色列表
-      this.getRoleList();
     }
   }
 </script>

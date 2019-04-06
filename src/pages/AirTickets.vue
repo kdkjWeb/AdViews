@@ -8,10 +8,10 @@
             <div>
               <el-form :inline="true" :model="formInline" size="mini" class="demo-form-inline">
                 <el-form-item label="出发地">
-                  <el-input v-model="formInline.user" placeholder="请输入出发地" clearable></el-input>
+                  <el-input v-model="formInline.startPlace" placeholder="请输入出发地" clearable></el-input>
                 </el-form-item>
                 <el-form-item label="目的地">
-                  <el-input v-model="formInline.user" placeholder="请输入目的地" clearable></el-input>
+                  <el-input v-model="formInline.endPlace" placeholder="请输入目的地" clearable></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="onSubmitSearch">查询</el-button>
@@ -77,93 +77,94 @@
         <el-form ref="form" :model="form" :rules="rules" label-width="100px" size="mini">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="出发地" prop="userName" v-if="isUserShow">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="出发地" prop="startPlace">
+                <el-input v-model="form.startPlace" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="目的地" prop="userName" v-if="isUserShow">
-                <el-input v-model="form.userName" clearable></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="起飞时间" prop="userName" v-if="isUserShow">
-                <el-time-picker
-                  v-model="form.userName"
-                  :picker-options="{
-                    selectableRange: '00:00:00 - 23:59:59'
-                  }"
-                  placeholder="选择起飞时间">
-                </el-time-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="降落时间" prop="userName" v-if="isUserShow">
-                <el-time-picker
-                  v-model="form.userName"
-                  :picker-options="{
-                    selectableRange: '00:00:00 - 23:59:59'
-                  }"
-                  placeholder="选择降落时间">
-                </el-time-picker>
+              <el-form-item label="目的地" prop="endPlace">
+                <el-input v-model="form.endPlace" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="起飞日期" prop="userName" v-if="isUserShow">
+              <el-form-item label="起飞时间" prop="startTime">
                 <el-date-picker
-                  v-model="form.userName"
+                  v-model="form.startTime"
+                  type="datetime"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  @change="handelStartTime"
+                  placeholder="选择起飞时间">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="降落时间" prop="endTime">
+                <el-date-picker
+                  v-model="form.endTime"
+                  type="datetime"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                  placeholder="选择起飞时间">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="起飞日期" prop="queryTime">
+                <el-date-picker
+                  v-model="form.queryTime"
+                  value-format="yyyy-MM-dd"
                   type="date"
                   placeholder="选择起飞日期">
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="舱位类型" prop="status" v-if="isUserShow">
-                <el-select v-model="form.status" placeholder="请选择舱位类型" clearable>
-                  <el-option label="经济舱" value="1"></el-option>
-                  <el-option label="商务舱" value="0"></el-option>
-                  <el-option label="头等舱" value="0"></el-option>
+              <el-form-item label="舱位类型" prop="cabin">
+                <el-select v-model="form.cabin" placeholder="请选择舱位类型" clearable>
+                  <el-option label="经济舱" value="经济舱"></el-option>
+                  <el-option label="商务舱" value="商务舱"></el-option>
+                  <el-option label="头等舱" value="头等舱"></el-option>
+                  <el-option label="超级经济舱" value="超级经济舱"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="起飞机场" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="起飞机场" prop="startAirport">
+                <el-input v-model="form.startAirport" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="降落机场" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="价格" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="航空公司" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="降落机场" prop="endAirport">
+                <el-input v-model="form.endAirport" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="航班号" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="价格" prop="price">
+                <el-input v-model="form.price" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="机型" prop="userName">
-                <el-input v-model="form.userName" clearable></el-input>
+              <el-form-item label="航空公司" prop="companyName">
+                <el-input v-model="form.companyName" clearable></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="航班号" prop="flightNumber">
+                <el-input v-model="form.flightNumber" clearable></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="机型" prop="aircraftType">
+                <el-input v-model="form.aircraftType" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -185,40 +186,107 @@
   export default {
     name: 'AirTickets',
     data(){
+
+      var checkStarTime = (rule,value,callback)=>{
+        if (value === '') {
+          callback(new Error('请选择起飞时间'));
+        }else {
+          const timestamp = (new Date()).getTime()
+
+          let date = value;
+          date = new Date(Date.parse(date.replace(/-/g, "/")));
+          date = date.getTime();
+
+          if(date < timestamp && (timestamp - date) > 1500){
+            return callback(new Error('起飞时间不能小于当前时间'));
+          }
+
+        }
+      };
+
+      var checkEndTime = (rule,value,callback)=>{
+        if (value === '') {
+          callback(new Error('请选择降落时间'));
+        }else {
+          // const timestamp = (new Date()).getTime()
+
+          console.log(value)
+
+          let date = value;
+          date = new Date(Date.parse(date.replace(/-/g, "/")));
+          date = date.getTime();
+
+
+
+          let startDate = this.form.startTime;
+          startDate = new Date(Date.parse(startDate.replace(/-/g, "/")));
+          startDate = startDate.getTime();
+
+          console.log(date,startDate)
+
+          if(date < startDate){
+            return callback(new Error('降落时间不能小于起飞时间'));
+          }
+
+        }
+      };
+
+
       return{
         dialogTitle: '新增机票',   //弹出框标题
-        isPwdShow: false,
-        isUserShow: false,
-        userId: '',    //用户id
+        id: '',    //用户id
         form: {
-          userName: '',  //用户名
-          password: '',   //密码
-          sussesspwd: '',   //确认密码
-          role: '',   //角色
-          status: ''   //状态
+          startPlace: '',  //出发地
+          endPlace: '',   //目的地
+          startTime: '',   //起飞时间
+          endTime: '',   //降落时间
+          cabin: '',   //舱位类型
+          queryTime: '',   //起飞日期
+          startAirport: '',   //起飞机场
+          endAirport: '',   //降落机场
+          price: '',   //价格
+          companyName: '',   //航空公司
+          flightNumber: '',  //航班号
+          aircraftType: '',  //机型
         },
         dialogVisible: false,  //是否显示遮罩层
         currentPage: 1, //当前第几页
         pageSize: 20,   //每页显示多少条
         total: 0,   //总共多少条数据
         formInline: {   //查询输入框数据
-          user: ''
+          startPlace: '',
+          endPlace: ''
         },
         tableData: [],   //表格数据
         roleList: [],   //角色列表
         tableList: [   //表格的头部配置
-          {prop: 'account', label: '用户名', width: '', align: ''},
-          {prop: 'role', label: '角色', width: '', align: ''},
-          {prop: 'cdate', label: '创建时间', width: '', align: ''},
-          {prop: 'status', label: '状态', width: '', align: ''},
+          {prop: 'startPlace', label: '出发地', width: '', align: ''},
+          {prop: 'endPlace', label: '目的地', width: '', align: ''},
+          {prop: 'queryTime', label: '起飞日期', width: '', align: ''},
+          {prop: 'startTime', label: '起飞时间', width: '', align: ''},
+          {prop: 'endTime', label: '降落时间', width: '', align: ''},
+          {prop: 'crtTime', label: '创建时间', width: '', align: ''},
+          {prop: 'price', label: '价格', width: '', align: ''},
+
         ],
         rules: {
-
+          startTime: [
+            { validator: checkStarTime, trigger: 'blur', required: false}
+          ],
+          endTime: [
+            { validator: checkEndTime, trigger: 'blur', required: false}
+          ],
         }
 
       }
     },
     methods: {
+      //验证起飞时间
+      handelStartTime(){
+        console.log(this.form.startTime)
+      },
+
+
       //条件查询搜索
       onSubmitSearch(){
         this.currentPage = 1;
@@ -232,82 +300,94 @@
 
       //弹出框确认按钮
       handleComfirm(formName){
-
-        if(this.isPwdShow && (!this.isUserShow) && this.userId){   //修改密码
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              this.$get('manager/updatePwd',{
-                id: this.userId,
-                pwd: this.form.password
-              }).then(res=>{
-                if(res.code == 0){
-                  this.dialogVisible = false;
-                  this.$message({
-                    message: '修改密码成功！',
-                    type: 'success'
-                  });
-                }
-              })
-            } else {
-              console.log('error submit!!');
-              return false;
+        const url = this.id ? '/flight/updateModel' : '/flight/insertModel';
+        if(this.id){   //id存在就是修改
+          this.$put(url,{
+            startPlace: this.form.startPlace,  //出发地
+            endPlace: this.form.endPlace,   //目的地
+            startTime: this.form.startTime,   //起飞时间
+            endTime: this.form.endTime,   //降落时间
+            cabin: this.form.cabin,   //舱位类型
+            queryTime: this.form.queryTime,   //起飞日期
+            startAirport: this.form.startAirport,   //起飞机场
+            endAirport: this.form.endAirport,   //降落机场
+            price: this.form.price,   //价格
+            companyName: this.form.companyName,   //航空公司
+            flightNumber: this.form.flightNumber,  //航班号
+            aircraftType: this.form.aircraftType,  //机型
+            id: this.id
+          }).then(res=>{
+            if(res.code == 0){
+              this.$message({
+                type: 'success',
+                message: '机票编辑成功!'
+              });
+              this.dialogVisible = false;
+              this.getDataList();
+            }
+          },err=>{
+            this.$message({
+              message: '机票编辑失败',
+              type: 'warning'
+            });
+          }).catch(err=>{
+            this.$message({
+              message: '机票编辑失败',
+              type: 'warning'
+            });
+          })
+        }else {   //id不存在就是新增
+          this.$post(url,{
+            startPlace: this.form.startPlace,  //出发地
+            endPlace: this.form.endPlace,   //目的地
+            startTime: this.form.startTime,   //起飞时间
+            endTime: this.form.endTime,   //降落时间
+            cabin: this.form.cabin,   //舱位类型
+            queryTime: this.form.queryTime,   //起飞日期
+            startAirport: this.form.startAirport,   //起飞机场
+            endAirport: this.form.endAirport,   //降落机场
+            price: this.form.price,   //价格
+            companyName: this.form.companyName,   //航空公司
+            flightNumber: this.form.flightNumber,  //航班号
+            aircraftType: this.form.aircraftType,  //机型
+          }).then(res=>{
+            if(res.code == 0){
+              this.$message({
+                type: 'success',
+                message: '机票添加成功!'
+              });
+              this.dialogVisible = false;
+              this.getDataList();
+            }
+          },err=>{
+            this.$message({
+              message: '机票添加失败',
+              type: 'warning'
+            });
+          }).catch(err=>{
+            err=>{
+              this.$message({
+                message: '机票添加失败',
+                type: 'warning'
+              });
             }
           })
-        }else {    //新增用户、修改用户    如果存在id就是修改用户否则就是新增用户
-          var url = this.userId ? 'manager/updateManager' : 'manager/addManager';
-
-          this.$refs[formName].validate((valid) => {
-            if (valid) {
-              this.$post(url,{
-                mgId: this.userId ? this.userId : null,
-                account: this.form.userName,
-                addPwd: this.form.password ? this.form.password : null,
-                rId: this.form.role,
-                status: this.form.status
-              }).then(res=>{
-
-                if(res.code == 0){
-                  this.dialogVisible = false;
-
-                  this.$message({
-                    message: this.userId ? '修改用户成功' : '新增用户成功',
-                    type: 'success'
-                  });
-
-                  this.getDataList();
-
-                }
-              })
-            } else {
-              console.log('error submit!!');
-              return false;
-            }
-          });
         }
-
-
-
-
-        // this.dialogVisible = false;
       },
 
 
       //获取表格数据
       getDataList(pageNum){
-        this.$get('manager/queryByRecord',{
+        this.$get('/flight/queryByRecord',{
           pageSize: this.pageSize,
           pageNum: pageNum ? pageNum : 1,
-          account: this.formInline.user ? this.formInline.user : null,
+          startPlace: this.formInline.startPlace ? this.formInline.startPlace : null,
+          endPlace: this.formInline.endPlace ? this.formInline.endPlace : null,
         }).then(res=>{
           if(res.code == 0){
             this.total = res.data.total;
 
-            let arr = res.data.list;
-            arr.forEach((e,index)=>{
-              arr[index].status = e.status == 1 ? '启用' : '禁用'
-            })
-
-            this.tableData = JSON.parse(JSON.stringify(arr));
+            this.tableData = res.data.list;
           }
         })
       },
@@ -315,15 +395,9 @@
       //新增用户
       handleAddUser(){
         this.dialogVisible = true;
-        this.isPwdShow = true;
-        this.isUserShow = true;
-        this.userId = '';
+
+        this.id = '';
         this.dialogTitle = '新增机票';
-        /*this.form.userName = '';
-        this.form.role = '';
-        this.form.status = '';
-        this.form.password = '';
-        this.form.sussesspwd = '';*/
 
 
         this.$nextTick(() => {
@@ -342,37 +416,34 @@
           this.$refs.form.resetFields();
         });
 
-        this.dialogVisible = true;
         this.dialogTitle = '编辑机票';
-        this.isPwdShow = false;
-        this.isUserShow = true;
 
-        this.userId = row.mgId;
+
+        this.id = row.id;
 
         //获取用户详情
-        this.$get('manager/queryById',{
-          id: row.mgId
+        this.$get('/flight/selectById',{
+          id: row.id
         }).then(res=>{
           if(res.code == 0){
 
-            this.form.userName = res.data.account;
-            this.form.password = res.data.pwd;
-            this.form.sussesspwd = res.data.pwd;
-            this.form.role = res.data.rId;
-            this.form.status = res.data.status + '';
+            this.form = res.data;
+
+            this.dialogVisible = true;
+
           }
         })
       },
 
       //删除表格某一行
       handleDelete(row){
-        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该机票, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$get('manager/deleteById',{
-            id: row.mgId
+          this.$delete('/flight/deleteById',{
+            id: row.id
           }).then(res=>{
             if(res.code == 0){
               this.$message({
@@ -397,23 +468,12 @@
         this.getDataList(this.currentPage);
       },
 
-      //获取角色列表
-      getRoleList(){
-        this.$get('role/queryByRecord',{
-          pageSize: 0,
-        }).then(res=>{
-          if(res.code == 0){
-            this.roleList = res.data.list;
-          }
-        })
-      }
+
     },
     mounted(){
       //获取表格数据
       this.getDataList();
 
-      //获取角色列表
-      this.getRoleList();
     }
   }
 </script>
